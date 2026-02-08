@@ -6,19 +6,18 @@ from django.test import SimpleTestCase
 from app import calc
 
 
-# since we are suing the Django testing suite which comes from unittest we need to encapsulate in classes
+# Django testing suite which comes from unittest encapsulate in classes
 
 
 class CalcTests(SimpleTestCase):
     """Test for calc module"""
+
     def test_add_numbers(self):
         """Test adding numbers together"""
         res = calc.add(5, 6)
-
         self.assertEqual(res, 11)
-        
-        
+
     def test_subtract_numbers(self):
         """Test subtracting numbers"""
-        res = calc.substract(10,15)
-        self.assertEqual(res,5)
+        res = calc.subtract(10, 15)
+        self.assertEqual(res, 5)
