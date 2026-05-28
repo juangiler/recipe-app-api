@@ -3,10 +3,11 @@ Test custom Django commands.
 """
 
 from unittest.mock import patch
-from psycopg2 import OperationalError as Psycopg2OpError
+
 from django.core.management import call_command
 from django.db.utils import OperationalError
 from django.test import SimpleTestCase
+from psycopg2 import OperationalError as Psycopg2OpError
 
 
 @patch("core.management.commands.wait_for_db.Command.check")
@@ -29,6 +30,7 @@ class CommandTests(SimpleTestCase):
         patched_check.side_effect = (
             [OperationalError] * 2 + [Psycopg2OpError] * 3 + [True]
         )
+
         # Call the wait_for_db command
         call_command("wait_for_db")
         # Assert the patched mehtod
