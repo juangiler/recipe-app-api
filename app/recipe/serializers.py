@@ -1,5 +1,6 @@
-from app_models.models import Ingredient, Recipe, Tag
 from rest_framework import serializers
+
+from app_models.models import Ingredient, Recipe, Tag
 
 # Create your views here.
 
@@ -48,20 +49,20 @@ class RecipeSerializer(serializers.ModelSerializer):
         """Handle getting or creating tags as needed."""
         auth_user = self.context["request"].user
         for tag in tags:
-            tag_obj, created = Tag.objects.get_or_create(user=auth_user, **tag)
+            tag_obj, _ = Tag.objects.get_or_create(user=auth_user, **tag)
             recipe.tags.add(tag_obj)
 
     def _get_or_create_ingredients(self, ingredients, recipe):
         """Handle getting or creating ingredient as needed"""
         auth_user = self.context["request"].user
         for ingredient in ingredients:
-            ingredient_obj, created = Ingredient.objects.get_or_create(
+            ingredient_obj, _ = Ingredient.objects.get_or_create(
                 user=auth_user, **ingredient
             )
             recipe.ingredients.add(ingredient_obj)
 
     def create(self, validated_data):
-        """reate a recipe"""
+        """Create a recipe"""
         validated_data.pop("append_tags", False)
         tags = validated_data.pop("tags", [])
         ingredients = validated_data.pop("ingredients", [])
@@ -108,4 +109,14 @@ class RecipeDetailSerializer(RecipeSerializer):
     """Serializer for recipe detail view."""
 
     class Meta(RecipeSerializer.Meta):
-        fields = RecipeSerializer.Meta.fields + ["description"]
+        fields = RecipeSerializer.Meta.fields + ["description", "image"]
+
+# single type of data for an API
+class RecipeImageSerializer(serializers.ModelSerializer):
+    """Serializer for uploading images to recipes"""
+
+    class Meta:
+        model = Recipe
+        fields = ['id','image']
+        read_only_fields = ['id']
+        extra_kwargs = {"image": {"required": "True"}}
